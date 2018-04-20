@@ -32,44 +32,15 @@
 
 #include <StandardCplusplus.h>
 #include <serstream>
+#include <iterator>
 #include <string>
 #include <vector>
-#include <iterator>
-//libraries for NRF:
-#include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <SPI.h>
+#include "Pad.h"
 
 using namespace std;
-
-class Pad {
-    const String padName;
-    const int pin;
-    bool state;
-
-  public:
-    Pad(String padName, int pin, bool state = true) : padName(padName), pin(pin), state(state) {
-    }
-
-    Pad(const Pad &pad) : padName(pad.padName), pin(pad.pin), state(pad.state) {
-    }
-
-    void changeState() {
-      state = !state;
-    }
-
-    bool getState() {
-      return state;
-    }
-
-    int getPin() {
-      return pin;
-    }
-
-    const String * getName() {
-      return &padName;
-    }
-};
 
 vector<Pad*> pads;
 RF24 radioTransmitter(14, 15);
