@@ -82,8 +82,8 @@ int generatePinNumber(int iterator) {
     return iterator + 4;
 }
 
-String generateName(int padNumber) {
-  return "Pad #" + String(padNumber + 1) + " ";
+String generateName(int iterator) {
+  return "Pad #" + String(iterator + 1) + " ";
 }
 
 void initializePadInputs() {
