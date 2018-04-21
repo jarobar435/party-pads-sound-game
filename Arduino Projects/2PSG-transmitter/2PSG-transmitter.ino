@@ -82,8 +82,8 @@ int generatePinNumber(int iterator) {
     return iterator + 4;
 }
 
-String generateName(int iterator) {
-  return "Pad #" + String(iterator + 1) + " ";
+String generateName(int padNumber) {
+  return "Pad #" + String(padNumber + 1) + " ";
 }
 
 void initializePadInputs() {
@@ -106,23 +106,23 @@ void updatePadsStates() {
   }
 }
 
-bool pinChangedState(int iterator) {
-  if(currentState(iterator) != savedState(iterator))
+bool pinChangedState(int padNumber) {
+  if(currentState(padNumber) != savedState(padNumber))
     return true;
   else
     return false;
 }
 
-bool currentState(int iterator) {
-  return digitalRead(pads[iterator]->getPin());
+bool currentState(int padNumber) {
+  return digitalRead(pads[padNumber]->getPin());
 }
 
-bool savedState(int iterator) {
-  return pads[iterator]->getState();
+bool savedState(int padNumber) {
+  return pads[padNumber]->getState();
 }
 
-void saveNewState(int iterator) {
-  pads[iterator]->changeState();
+void saveNewState(int padNumber) {
+  pads[padNumber]->changeState();
 }
 
 void sendInformationToReceiver(Pad* pad) {
