@@ -4,7 +4,7 @@
 
 ### Current status
 
-*Project is currently in the WorkInProgres stage.*  
+*Project is currently in the Work In Progress stage.*  
 *The completion deadline: ***06.05.2018****
 
 **TODO's:**
@@ -22,7 +22,7 @@
 
 ### Dependencies
 
- ***Arduino projects uses:***
+ ***Arduino projects use:***
 * *[maniacbug/StandardCplusplus](https://github.com/maniacbug/StandardCplusplus/blob/master/README.md) library,*
 * *[nRF24/RF24](https://github.com/nRF24/RF24) library.*
 
