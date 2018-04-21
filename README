@@ -2,7 +2,7 @@
 
 *Party game project for Arduino and music enthusiasts.* 
 
-### Current status
+## Current status
 
 *Project is currently in the Work In Progress stage.*  
 *The completion deadline: ***06.05.2018****
@@ -18,9 +18,7 @@
  
 - [ ] **Tests on target groups, recording project demo.**
 
-
-
-### Dependencies
+## Dependencies
 
  ***Arduino projects use:***
 * *[maniacbug/StandardCplusplus](https://github.com/maniacbug/StandardCplusplus/blob/master/README.md) library,*
