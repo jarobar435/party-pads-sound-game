@@ -5,7 +5,6 @@
   then pass them via USB port (Serial Connection) to computer. Properly configured and working
   at that time AHK script will receive the request and trigger the start or stop  action on demand.
   
-  
   The circuit:
     Modules:
     • Arduino Uno R3,
@@ -26,10 +25,9 @@
   https://github.com/jarobar435/party-pads-sound-game
 */
 
-//libraries for NRF:
-#include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <SPI.h>
 
 RF24 radioReceiver(8, 9);
 String receivedText;

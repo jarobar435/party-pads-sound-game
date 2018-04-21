@@ -32,49 +32,30 @@
 
 #include <StandardCplusplus.h>
 #include <serstream>
+#include <iterator>
 #include <string>
 #include <vector>
-#include <iterator>
-//libraries for NRF:
-#include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <SPI.h>
+#include "Pad.h"
 
 using namespace std;
 
-class Pad {
-    const String padName;
-    const int pin;
-    bool state;
-
-  public:
-    Pad(String padName, int pin, bool state = true) : padName(padName), pin(pin), state(state) {
-    }
-
-    Pad(const Pad &pad) : padName(pad.padName), pin(pad.pin), state(pad.state) {
-    }
-
-    void changeState() {
-      state = !state;
-    }
-
-    bool getState() {
-      return state;
-    }
-
-    int getPin() {
-      return pin;
-    }
-
-    const String * getName() {
-      return &padName;
-    }
-};
-
+/* 
+ * Warning - program uses every single available 
+ * Digital Port of Arduino Mini Pro
+ * changing values below will create the necessity
+ * to modify range of pins in generatePinNumber().
+ */
+const int 
+  CE_PIN = 14,
+  CS_PIN = 15;
+  
 vector<Pad*> pads;
-RF24 radioTransmitter(14, 15);
-const String startText = " start";
-const String stopText = " stop";
+RF24 radioTransmitter(CE_PIN, CS_PIN);    
+const String START_TEXT = "start";
+const String STOP_TEXT = "stop";
 
 void setup() {
   initializeRadioConnection();
@@ -89,22 +70,20 @@ void initializeRadioConnection() {
   radioTransmitter.stopListening();
 }
 
-/*
-  addPads is prepared purely for MiniPro
-  20 pins that can work as digital inputs
-  (minus 6 needed for NRF module)
-*/
 void addPads() {
-  for (int i = 0; i < 14; i++) {
-    if (i < 10)
-      pads.push_back(new Pad(generateName(i), i));
-    else
-      pads.push_back(new Pad(generateName(i), i + 4));
-  }
+  for (int i = 0; i < 14; i++)
+    pads.push_back(new Pad(generateName(i), generatePinNumber(i)));
 }
 
-String generateName(int number) {
-  return "Pad #" + String(number + 1) + " ";
+int generatePinNumber(int iterator) {
+  if (iterator < 10)
+    return iterator;
+  else
+    return iterator + 4;
+}
+
+String generateName(int padNumber) {
+  return "Pad #" + String(padNumber + 1) + " ";
 }
 
 void initializePadInputs() {
@@ -119,20 +98,46 @@ void loop() {
 
 void updatePadsStates() {
   for (int i = 0; i < pads.size(); i++) {
-    if (digitalRead(pads[i]->getPin()) != pads[i]->getState()) {
-      pads[i]->changeState();
-      sendRequest(pads[i]);
+    if (pinChangedState(i)) {
+      saveNewState(i);
+      sendInformationToReceiver(pads[i]);
       delay(10);
     }
   }
 }
 
-void sendRequest(Pad* pad) {
-  radioTransmitter.write(pad->getName(), sizeof(pad->getName()));
-  if (!pad->getState())
-    radioTransmitter.write(&startText, sizeof(startText));
+bool pinChangedState(int padNumber) {
+  if(currentState(padNumber) != savedState(padNumber))
+    return true;
   else
-    radioTransmitter.write(&stopText, sizeof(stopText));
+    return false;
 }
 
+bool currentState(int padNumber) {
+  return digitalRead(pads[padNumber]->getPin());
+}
+
+bool savedState(int padNumber) {
+  return pads[padNumber]->getState();
+}
+
+void saveNewState(int padNumber) {
+  pads[padNumber]->changeState();
+}
+
+void sendInformationToReceiver(Pad* pad) {
+  sendPadName(pad->getName());
+  sendActionIndicator(pad->getState());
+}
+
+void sendPadName(const String * padName) {
+  radioTransmitter.write(padName, sizeof(padName));
+}
+
+void sendActionIndicator(bool state) {
+  if(state)
+    radioTransmitter.write(&START_TEXT, sizeof(START_TEXT));
+  else
+    radioTransmitter.write(&STOP_TEXT, sizeof(STOP_TEXT));
+}
 
